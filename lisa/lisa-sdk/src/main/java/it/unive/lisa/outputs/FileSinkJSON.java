@@ -27,58 +27,7 @@ public class FileSinkJSON extends FileSinkBase {
     @Override
     protected void exportGraph(Graph g) {
         out = (PrintWriter) output;
-        AtomicBoolean firstNode = new AtomicBoolean(true);
-        AtomicBoolean firstEdge = new AtomicBoolean(true);
-
-        out.printf("{\n\t\"nodes\":[\n");
-
-        g.nodes().forEach(node -> {
-            AtomicBoolean firstAttribute = new AtomicBoolean(true);
-            String nodeId = node.getId();
-            out.printf(firstNode.get() ? "\t{ \"id\" : \"%s\", \n" : ",\n\t{ \"id\" : \"%s\", \n", nodeId);
-
-            if (firstNode.get())
-                firstNode.set(false);
-
-            node.attributeKeys().forEach(key ->{
-                Object value = node.getAttribute(key);
-                if (value instanceof String){
-                    value = ((String) value).replace("\"", "\\\"");
-                }
-                out.printf(firstAttribute.get() ? "\t\t\"%s\" : \"%s\"" : ",\n\t\t\"%s\" : \"%s\"", key, value);
-
-                if (firstAttribute.get())
-                    firstAttribute.set(false);
-            });
-
-            out.printf("\n\t}");
-        });
-
-        out.printf("\n\t],\n\t\"edges\" : [\n");
-
-        g.edges().forEach(edge -> {
-            AtomicBoolean firstAttribute = new AtomicBoolean(true);
-            String edgeId = edge.getId();
-
-            out.printf(firstEdge.get() ? "\t{ \"id\" : \"%s\", \n" : ",\n\t{ \"id\" : \"%s\", \n", edgeId);
-            if (firstEdge.get())
-                firstEdge.set(false);
-
-            out.printf("\t\t\"start\" : \"%s\",\n", edge.getNode0());
-            out.printf("\t\t\"end\" : \"%s\",\n", edge.getNode1());
-
-            edge.attributeKeys().forEach(key ->{
-                Object value = edge.getAttribute(key);
-                out.printf(firstAttribute.get() ? "\t\t\"%s\" : \"%s\"" : ",\n\t\t\"%s\" : \"%s\"", key, value);
-
-                if (firstAttribute.get())
-                    firstAttribute.set(false);
-            });
-
-            out.printf("\n\t}");
-        });
-
-        out.printf("\n\t]\n}");
+        out.print(this.toString(g));
     }
 
     public String toString(Graph g){
